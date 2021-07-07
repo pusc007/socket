@@ -96,7 +96,7 @@
           });
           setInterval(() => {
             this.socket.emit("updateInfo", { pos: this.mPos });
-          }, 1000 / 30);
+          }, 1000 / 60);
         },
         methods: {
           room_change(e) {

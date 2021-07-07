@@ -29,7 +29,7 @@ const startServer = async () => {
   const usersInfoBroadcast = events.usersInfoBroadcast(io);
   setInterval(() => {
     usersInfoBroadcast();
-  }, 1000 / 30);
+  }, 1000 / 60);
 
   const port = process.env.PORT || 4300;
   const host = process.env.BASE_URL || "localhost";
