@@ -1,0 +1,113 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+  <head>
+    <meta charset="UTF-8" />
+    <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <title>socket</title>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/vue/2.6.14/vue.min.js"></script>
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/socket.io/4.1.2/socket.io.min.js"></script>
+    <style>
+      body {
+        margin: 0;
+        overflow: hidden;
+      }
+      .content {
+        position: relative;
+      }
+      .users {
+      }
+      .users .usersTitle {
+        margin: 5px 0px;
+      }
+      .users .usersContent {
+        margin: 5px 0px;
+        display: flex;
+      }
+      .users .usersContent .user {
+        background-color: aquamarine;
+        padding: 5px;
+        margin: 5px;
+      }
+      .box {
+        position: absolute;
+        display: block;
+        width: 100%;
+        height: 100%;
+        background-color: beige;
+      }
+      .box .user {
+        position: absolute;
+        display: block;
+        width: 10px;
+        height: 10px;
+        background-color: brown;
+        border: 1px solid #000;
+      }
+    </style>
+  </head>
+  <body>
+    <div id="app">
+      <div class="box" @mousemove="box_mousemove">
+        <div
+          class="user"
+          v-for="(user,key) in users"
+          :key="key"
+          :style="{left:user.pos[0]+'px',top:user.pos[1]+'px'}"
+        ></div>
+      </div>
+      <div class="content">
+        <div>
+          <label>
+            <span>請選擇進入的房間</span>
+          </label>
+          <select class="room" v-model="room" @change="room_change">
+            <option>general</option>
+            <option>A</option>
+            <option>B</option>
+          </select>
+        </div>
+        <div class="users">
+          <div class="usersTitle">在線列表</div>
+          <div class="usersContent">
+            <div class="user" v-for="(user,key) in users" :key="key">{{user.id}}</div>
+          </div>
+        </div>
+      </div>
+    </div>
+    <div></div>
+    <script>
+      const app = new Vue({
+        el: "#app",
+        data() {
+          return { room: "general", socket: null, users: [], mPos: [0, 0] };
+        },
+        mounted() {
+          this.socket = io.connect();
+          this.socket.emit("joinRoom", { username: "XXX", room: this.room });
+          this.socket.on("newUser", (users) => {
+            this.users = users;
+          });
+          this.socket.on("userLeave", (users) => {
+            this.users = users;
+          });
+          this.socket.on("usersInfo", (users) => {
+            this.users = users;
+          });
+          setInterval(() => {
+            this.socket.emit("updateInfo", { pos: this.mPos });
+          }, 1000 / 30);
+        },
+        methods: {
+          room_change(e) {
+            //console.log(e.currentTarget.value);
+            this.socket.emit("joinRoom", { username: "XXX", room: this.room });
+          },
+          box_mousemove(e) {
+            this.mPos = [e.pageX, e.pageY];
+          },
+        },
+      });
+    </script>
+  </body>
+</html>
