@@ -1,9 +1,4 @@
 import "@src/index.css";
-import arrow from "@assets/arrow.png";
-import bullet from "@assets/bullet.png";
-import role from "@assets/role.png";
-import circle01 from "@assets/circle01.png";
-import emitter01 from "@assets/emitter01.json";
 
 import { Vector, VectorE } from "@/js/vector";
 import { keyboard, addControl } from "@js/supplement";
@@ -14,6 +9,7 @@ import io from "socket.io-client";
 
 import * as PIXI from "pixi.js";
 import * as PIXI_Particles from "pixi-particles";
+import * as PIXI_Spine from "pixi-spine";
 
 const app = new PIXI.Application({ backgroundAlpha: 1 });
 document.body.appendChild(app.view);
@@ -46,17 +42,20 @@ p2p.on("ready", () => {
   //p2p.emit('peer-obj', { peerId: peerId });
   console.log("aaaa");
 });*/
-
-app.loader.add("role", role);
-app.loader.add("arrow", arrow);
-app.loader.add("bullet", bullet);
-app.loader.add("circle01", circle01);
+/*PIXI.Loader.add("/assets/role.png", "role").load((loader, resources) => {
+  console.log(loader, resources);
+});*/
+app.loader.add("role", "/assets/role.png");
+app.loader.add("arrow", "/assets/arrow.png");
+app.loader.add("bullet", "/assets/bullet.png");
+app.loader.add("circle01", "/assets/circle01.png");
+app.loader.add("emitter01", "/assets/emitter01.json");
+//app.loader.add("dragon_1", "/assets/dragon_1.json");
 
 app.loader.onProgress.add((loader) => {
   console.log(loader.progress, "loading");
 });
 app.loader.load((loader, resources) => {
-  resources.emitter01 = { data: emitter01 };
   init(resources);
 });
 
@@ -66,6 +65,8 @@ const init = (resources) => {
 };
 
 const initStage = (resources) => {
+  //const dragon = new PIXI_Spine.Spine(resources.dragon_1_json.data);
+  //console.log(resources.dragon_1.spineData);
   const players = {};
   const bullets = [];
   const addPlayer = (data) => {
