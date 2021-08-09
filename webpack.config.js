@@ -146,9 +146,9 @@ module.exports = {
           cleanOnceBeforeBuildPatterns: ["./*"],
         })
       : null,
-    // new WebpackCopyPlugin({
-    //   patterns: [{ from: "./src/assets", to: "assets" }],
-    // }),
+    new WebpackCopyPlugin({
+      patterns: [{ from: "./src/assets", to: "assets" }],
+    }),
     new MiniCssExtractPlugin({ filename: "css/[name].[hash].css" }),
     new HtmlWebpackPlugin({
       title: "",
